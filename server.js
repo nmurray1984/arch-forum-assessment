@@ -15,6 +15,11 @@ if (!fs.existsSync(DATA_DIR)) {
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// Health check for Railway
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 // ── Submit assessment ──
 app.post("/api/submit", (req, res) => {
   const { name, ratings, domains } = req.body;

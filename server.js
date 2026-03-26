@@ -5,7 +5,7 @@ const crypto = require("crypto");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = path.join(__dirname, "data");
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -15,7 +15,7 @@ if (!fs.existsSync(DATA_DIR)) {
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Health check for Railway
+// Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });

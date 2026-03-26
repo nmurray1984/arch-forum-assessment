@@ -7,6 +7,7 @@ primary_region = "iad"
 [env]
   PORT = "8080"
   DATA_DIR = "/data"
+  BASE_URL = "https://architect-assessment.fly.dev"
 
 [http_service]
   internal_port = 8080

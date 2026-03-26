@@ -728,6 +728,9 @@ const DOMAINS = [
 const LEVEL_LABELS = ["", "Unaware", "Aware", "Knowledgeable", "Practiced", "Can Advise"];
 const LEVEL_COLORS = ["", "#94a3b8", "#64748b", "#1A41AB", "#1A57D6", "#F95353"];
 
+let BASE_URL = window.location.origin; // default fallback
+fetch("/api/config").then(r => r.json()).then(c => { BASE_URL = c.baseUrl; }).catch(() => {});
+
 let ratings = {};  // "domainIdx-itemIdx" → 1..5
 let totalConcepts = 0;
 
@@ -921,7 +924,7 @@ function renderResults(name, ratingsData, savedId) {
   // Show persistent link if we have an ID from the backend
   const linkBox = document.getElementById("link-box");
   if (savedId) {
-    const link = `${window.location.origin}/results/${savedId}`;
+    const link = `${BASE_URL}/results/${savedId}`;
     document.getElementById("link-url").textContent = link;
     linkBox.style.display = "block";
   } else {
@@ -979,7 +982,7 @@ function renderSavedResults(record) {
     container.appendChild(card);
   });
 
-  const link = `${window.location.origin}/results/${record.id}`;
+  const link = `${BASE_URL}/results/${record.id}`;
   document.getElementById("link-url").textContent = link;
   document.getElementById("link-box").style.display = "block";
 }

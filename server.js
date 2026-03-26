@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -18,6 +19,11 @@ app.use(express.static(__dirname));
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
+});
+
+// Expose base URL to frontend
+app.get("/api/config", (req, res) => {
+  res.json({ baseUrl: BASE_URL });
 });
 
 // ── Submit assessment ──

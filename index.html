@@ -110,11 +110,116 @@
   .btn-coral:hover { background: #e04444; }
 
   /* ── Assessment View ── */
-  .assessment-container {
-    max-width: 860px;
-    margin: 1.5rem auto;
-    padding: 0 1.5rem 3rem;
+  .assessment-layout {
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    gap: 1.5rem;
+    align-items: flex-start;
   }
+  .assessment-container {
+    flex: 1;
+    min-width: 0;
+    padding: 0 0 3rem;
+  }
+
+  /* Sticky rating legend sidebar */
+  .rating-sidebar {
+    position: sticky;
+    top: 1.5rem;
+    width: 200px;
+    flex-shrink: 0;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    margin-top: 4.5rem;
+  }
+  .rating-sidebar h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--desc);
+    margin-bottom: 0.6rem;
+  }
+  .sidebar-level {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #f0f2f8;
+  }
+  .sidebar-level:last-child { border-bottom: none; }
+  .sidebar-num {
+    font-weight: 700;
+    font-size: 0.95rem;
+    min-width: 1.1rem;
+    text-align: center;
+  }
+  .sidebar-num[data-v="1"] { color: #94a3b8; }
+  .sidebar-num[data-v="2"] { color: #64748b; }
+  .sidebar-num[data-v="3"] { color: var(--light-navy); }
+  .sidebar-num[data-v="4"] { color: var(--indigo); }
+  .sidebar-num[data-v="5"] { color: var(--coral); }
+  .sidebar-label { font-size: 0.8rem; color: var(--navy); }
+  .sidebar-desc { font-size: 0.72rem; color: var(--desc); }
+
+  @media (max-width: 860px) {
+    .assessment-layout { flex-direction: column; }
+    .rating-sidebar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      width: 100%;
+      margin: 0;
+      border-radius: 10px 10px 0 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+    }
+    .rating-sidebar h3 { margin: 0; font-size: 0.7rem; writing-mode: vertical-lr; transform: rotate(180deg); }
+    .sidebar-level { border: none; padding: 0; flex-direction: column; align-items: center; gap: 0.1rem; }
+    .sidebar-desc { display: none; }
+    .assessment-container { padding-bottom: 5rem; }
+  }
+
+  /* Warning modal */
+  .warning-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  .warning-overlay.active { display: flex; }
+  .warning-box {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  .warning-box h3 {
+    color: var(--coral);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .warning-box p {
+    font-size: 0.9rem;
+    color: var(--desc);
+    margin-bottom: 1.25rem;
+  }
+  .warning-box .btn { margin: 0 0.35rem; }
 
   /* Progress bar */
   .progress-bar-wrapper {
@@ -420,16 +525,35 @@
 
 <!-- ══════════════ ASSESSMENT VIEW ══════════════ -->
 <div id="view-assessment" class="view">
-  <div class="assessment-container">
-    <div class="progress-bar-wrapper">
-      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="progress-text" id="progress-text">0 / 0 rated</div>
+  <div class="assessment-layout">
+    <div class="assessment-container">
+      <div class="progress-bar-wrapper">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text">0 / 0 rated</div>
+      </div>
+      <div id="domains-container"></div>
+      <div class="submit-area">
+        <button class="btn btn-coral" onclick="submitAssessment()">Submit Assessment</button>
+      </div>
     </div>
-    <div id="domains-container"></div>
-    <div class="submit-area">
-      <button class="btn btn-coral" onclick="submitAssessment()">Submit Assessment</button>
-      <div class="incomplete-msg" id="incomplete-msg">Please rate all concepts before submitting.</div>
+    <div class="rating-sidebar">
+      <h3>Rating Scale</h3>
+      <div class="sidebar-level"><span class="sidebar-num" data-v="1">1</span><div><span class="sidebar-label">Unaware</span><br><span class="sidebar-desc">Haven't encountered this</span></div></div>
+      <div class="sidebar-level"><span class="sidebar-num" data-v="2">2</span><div><span class="sidebar-label">Aware</span><br><span class="sidebar-desc">Know it exists</span></div></div>
+      <div class="sidebar-level"><span class="sidebar-num" data-v="3">3</span><div><span class="sidebar-label">Knowledgeable</span><br><span class="sidebar-desc">Could explain tradeoffs</span></div></div>
+      <div class="sidebar-level"><span class="sidebar-num" data-v="4">4</span><div><span class="sidebar-label">Practiced</span><br><span class="sidebar-desc">Applied in real projects</span></div></div>
+      <div class="sidebar-level"><span class="sidebar-num" data-v="5">5</span><div><span class="sidebar-label">Can Advise</span><br><span class="sidebar-desc">Could mentor others</span></div></div>
     </div>
+  </div>
+</div>
+
+<!-- Warning modal for incomplete submission -->
+<div class="warning-overlay" id="warning-overlay" onclick="if(event.target===this)closeWarning()">
+  <div class="warning-box">
+    <h3>Incomplete Assessment</h3>
+    <p id="warning-text"></p>
+    <button class="btn btn-primary" onclick="closeWarning()">Go Back &amp; Finish</button>
+    <button class="btn btn-coral" onclick="forceSubmit()">Submit Anyway</button>
   </div>
 </div>
 
@@ -688,14 +812,28 @@ function startAssessment() {
   showView("view-assessment");
 }
 
-async function submitAssessment() {
+function submitAssessment() {
   const rated = Object.keys(ratings).length;
   if (rated < totalConcepts) {
-    document.getElementById("incomplete-msg").style.display = "block";
-    // Still allow submit but warn
-    if (rated < totalConcepts * 0.5) return;
+    const missing = totalConcepts - rated;
+    document.getElementById("warning-text").textContent =
+      `You've rated ${rated} of ${totalConcepts} concepts (${missing} remaining). You can go back and finish, or submit with what you have.`;
+    document.getElementById("warning-overlay").classList.add("active");
+    return;
   }
+  doSubmit();
+}
 
+function closeWarning() {
+  document.getElementById("warning-overlay").classList.remove("active");
+}
+
+function forceSubmit() {
+  closeWarning();
+  doSubmit();
+}
+
+async function doSubmit() {
   const name = document.getElementById("respondent-name").value.trim();
 
   // Try to save to backend

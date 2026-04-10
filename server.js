@@ -88,6 +88,11 @@ app.get("/api/assessments", (req, res) => {
   res.json(summaries);
 });
 
+// ── Concept map page ──
+app.get("/concept-map", (req, res) => {
+  res.sendFile(path.join(__dirname, "concept-map.html"));
+});
+
 // ── SPA fallback: serve index.html for /results/:id routes ──
 app.get("/results/:id", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
